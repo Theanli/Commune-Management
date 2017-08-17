@@ -2,53 +2,56 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use App\Role;
-use Laraveldaily\Quickadmin\Observers\UserActionsObserver;
-use Laraveldaily\Quickadmin\Traits\AdminPermissionsTrait;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Model implements AuthenticatableContract,
-    AuthorizableContract,
-    CanResetPasswordContract
+class User extends Authenticatable
 {
-    use Authenticatable, Authorizable, CanResetPassword, AdminPermissionsTrait;
+    use Notifiable;
 
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'users';
+    const VERIFIED_USER = '1';
+    const UNVERIFIED_USER = '0';
+
+    const ADMIN_USER = true;
+    const REGULAR_USER = false;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password', 'role_id'];
+    protected $fillable = [
+        'name', 
+        'email', 
+        'password',
+        'verified',
+        'verification_token',
+        'admin',
+    ];
 
     /**
-     * The attributes excluded from the model's JSON form.
+     * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [
+        'password', 
+        'remember_token',
+        'verification_token',
+    ];
 
-    public static function boot()
+    public function isVerified()
     {
-        parent::boot();
-
-        User::observe(new UserActionsObserver);
+        return $this->verified == User::VERIFIED_USER;
     }
 
-    public function role()
+    public function isAdmin() 
     {
-        return $this->belongsTo(Role::class);
+        return $this->admin == User::ADMIN_USER;
+    }
+
+    public static function generateVerificationCode()
+    {
+        return str_random(40);
     }
 }
