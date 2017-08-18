@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transaction;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Transaction;
 
 class TransactionController extends Controller
 {

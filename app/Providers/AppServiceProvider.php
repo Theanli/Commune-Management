@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
+use DB;
+use Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +16,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        //  For migrate unique 
+        Schema::defaultStringLength(191);
+
+        //  Show error sql statement in storage/log/laravel.log
+        DB::listen(function($query) {
+            Log::info(
+                $query->sql,
+                $query->bindings,
+                $query->time
+            );
+        });
     }
 
     /**

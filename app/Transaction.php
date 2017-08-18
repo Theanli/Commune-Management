@@ -11,7 +11,7 @@ class Transaction extends Model
     	'quantity',
     	'buyer_id',
     	'product_id',
-    ]
+    ];
 
     public function buyer()
     {
