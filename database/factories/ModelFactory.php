@@ -3,6 +3,8 @@
 use App\User;
 use App\Product;
 use App\Category;
+use App\Transaction;
+use App\Seller;
 
 /*
 |--------------------------------------------------------------------------

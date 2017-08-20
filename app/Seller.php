@@ -1,12 +1,13 @@
 <?php
 
 namespace App;
+use App\User;
 
 class Seller extends User
 {
     //
     public function products()
     {
-    	return $this->hasToMany(Product::class);
+    	return $this->hasMany(Product::class);
     }
 }
